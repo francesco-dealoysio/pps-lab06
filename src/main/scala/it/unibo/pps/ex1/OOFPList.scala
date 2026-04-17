@@ -124,7 +124,8 @@ enum List[A]:
   */
 
   //  Example: List(1, 2, 3, 4).collect { case x if x % 2 == 0 => x * 10 } // List(20, 40)
-  def collect(predicate: PartialFunction[A, A]): List[A] = ???
+  def collect(predicate: PartialFunction[A, A]): List[A] =
+    filter(a => predicate.isDefinedAt(a)).map(a => predicate(a))
 
 // Factories
 object List:
@@ -164,14 +165,15 @@ object Test extends App:
   //val res = reference.foldLeft(Nil())((acc, h) => h :: acc)
   //val res = reference.foldRight(Nil())((h, acc) => h :: acc)
   //val res = reference.foldRight(Nil())((h, acc) => h :: acc)
-  val res: List[Int] = reference.foldRight((0, Nil[Int]()))((h, acc) => (acc._1, h :: acc._2))._2
-  println(res)
+  //val res: List[Int] = reference.foldRight((0, Nil[Int]()))((h, acc) => (acc._1, h :: acc._2))._2
+  //println(res)
 
-  val res1: List[Int] = of(10, 3)
-  println(res1)
+  //val res1: List[Int] = of(10, 3)
+  //println(res1)
 
 //  println(unzip(List((1, 2), (4, 3), (10, 20)))) //
 //  println(unzipWithFold(List((1, 2), (4, 3), (10, 20)))) //
+
   println("zipWithValue: " + reference.zipWithValue(10)) // List((1, 10), (2, 10), (3, 10), (4, 10))
   println("length......: " + reference.length()) // 4
   println("indices.....: " + reference.indices()) // List(0, 1, 2, 3)
@@ -180,6 +182,13 @@ object Test extends App:
   println("span........: " + reference.span(_ % 2 != 0)) // (List(1), List(2, 3, 4))
   println("span........: " + reference.span(_ < 3)) // (List(1, 2), List(3, 4))
   println("takeRight...: " + reference.takeRight(3)) // List(2, 3, 4)
-/*.
   println(reference.collect { case x if x % 2 == 0 => x + 1 }) // List(3, 5)
+
+/*
+  val pf1: PartialFunction[Int, Int] = {
+    case x if x % 2 == 0 => x * 10
+  }
+
+  println(pf1.isDefinedAt(2))
+  println(pf1(2))
 */

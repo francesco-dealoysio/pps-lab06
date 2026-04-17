@@ -1,5 +1,7 @@
 package it.unibo.pps.ex1
 
+import scala.annotation.tailrec
+
 // List as a pure interface
 enum List[A]:
   case ::(h: A, t: List[A])
@@ -55,7 +57,8 @@ enum List[A]:
 
   def length(): Int =
     foldLeft(0)((acc, _) => acc + 1)
-/*
+
+  /*
   def indices(): List[Int] =
     var result = foldLeft((0, Nil(): List[Int]))((acc, _) =>
       var i = acc._1
@@ -63,14 +66,20 @@ enum List[A]:
       (i + 1, i :: list)
     )
     result._2.reverse
-*/
+  */
   // Example: List("a","b","c").indices // List(0,1,2)
   def indices(): List[Int] =
     //foldLeft((0, Nil()): (Int, List[Int]))((init, _) => (init._1 + 1, init._1 :: init._2))._2.reverse
     //foldLeft((length() - 1, Nil()): (Int, List[Int]))((init, _) => (init._1 - 1, init._1 :: init._2))._2
     foldLeft((length() - 1, Nil[Int]()))((init, _) => (init._1 - 1, init._1 :: init._2))._2
 
-/*
+  /*
+  def foldLeft[B](init: B)(op: (B, A) => B): B = this match
+    case h :: t => t.foldLeft(op(init, h))(op)
+    case _ => init
+  */
+
+  /*
   def zipWithIndex: List[(A, Int)] =
     var result = foldRight((length()-1, Nil(): List[(A, Int)]))((h, acc) =>
       var i = acc._1
@@ -78,7 +87,7 @@ enum List[A]:
       (i - 1, (h, i) :: list)
     )
     result._2
-*/
+  */
   //
   def zipWithIndex: List[(A, Int)] =
     foldRight((length() - 1, Nil[(A, Int)]()))((h, init) => (init._1 - 1, (h, init._1) :: init._2))._2
@@ -89,7 +98,6 @@ enum List[A]:
 
   // Example: List(2,4,3,6).span(x => x % 2 == 0) // (List(2,4), List(3,6))
   def span(predicate: A => Boolean): (List[A], List[A]) = this match
-    //case (h, t) => if predicate(h) then val appo =
     case h :: t =>
       if predicate(h) then
         var (list1, list2) = t.span(predicate)
@@ -98,8 +106,22 @@ enum List[A]:
         (Nil(), this)
     case _ => (Nil(), Nil())
 
+
   // Example: List(1,2,3,4).takeRight(2) // List(3,4)
-  def takeRight(n: Int): List[A] = ???
+  def takeRight(n: Int): List[A] =
+    @tailrec
+    def inner(list: List[A], n: Int, result: List[A]): List[A] = list match
+      case h :: t if n > 0 => inner(t, n - 1, h :: result)
+      case _ => result
+    inner(this.reverse, n, Nil())
+
+    //foldRight((length() - 1, Nil[A]()))((h, init) => h :: init._2)._2
+
+  /*
+  def foldRight[B](init: B)(op: (A, B) => B): B = this match
+    case h :: t => op(h, t.foldRight(init)(op))
+    case _ => init
+  */
 
   //  Example: List(1, 2, 3, 4).collect { case x if x % 2 == 0 => x * 10 } // List(20, 40)
   def collect(predicate: PartialFunction[A, A]): List[A] = ???
@@ -122,12 +144,32 @@ object List:
     for e <- elems.reverse do list = e :: list
     list
 
+  // y: crea una lista contenente n volte l'elemento elem
   def of[A](elem: A, n: Int): List[A] =
     if n == 0 then Nil() else elem :: of(elem, n - 1)
 
 object Test extends App:
   import List.*
   val reference = List(1, 2, 3, 4)
+
+  /*
+  def foldLeft[B](init: B)(op: (B, A) => B): B = this match
+    case h :: t => t.foldLeft(op(init, h))(op)
+    case _ => init
+  */
+
+//  collection.foldLeft(valoreIniziale)(funzione)
+//  funzione → (accumulatore, elemento) => nuovoAccumulatore
+
+  //val res = reference.foldLeft(Nil())((acc, h) => h :: acc)
+  //val res = reference.foldRight(Nil())((h, acc) => h :: acc)
+  //val res = reference.foldRight(Nil())((h, acc) => h :: acc)
+  val res: List[Int] = reference.foldRight((0, Nil[Int]()))((h, acc) => (acc._1, h :: acc._2))._2
+  println(res)
+
+  val res1: List[Int] = of(10, 3)
+  println(res1)
+
 //  println(unzip(List((1, 2), (4, 3), (10, 20)))) //
 //  println(unzipWithFold(List((1, 2), (4, 3), (10, 20)))) //
   println("zipWithValue: " + reference.zipWithValue(10)) // List((1, 10), (2, 10), (3, 10), (4, 10))
@@ -135,9 +177,9 @@ object Test extends App:
   println("indices.....: " + reference.indices()) // List(0, 1, 2, 3)
   println("zipWithIndex: " + reference.zipWithIndex) // List((1, 0), (2, 1), (3, 2), (4, 3))
   println("partition...: " + reference.partition(_ % 2 == 0)) // (List(2, 4), List(1, 3))
-  println("span:.......: " + reference.span(_ % 2 != 0)) // (List(1), List(2, 3, 4))
-  println("span:.......: " + reference.span(_ < 3)) // (List(1, 2), List(3, 4))
-/*
-  println(reference.takeRight(3)) // List(2, 3, 4)
+  println("span........: " + reference.span(_ % 2 != 0)) // (List(1), List(2, 3, 4))
+  println("span........: " + reference.span(_ < 3)) // (List(1, 2), List(3, 4))
+  println("takeRight...: " + reference.takeRight(3)) // List(2, 3, 4)
+/*.
   println(reference.collect { case x if x % 2 == 0 => x + 1 }) // List(3, 5)
 */

@@ -85,7 +85,7 @@ enum List[A]:
 
   // Example: List(5,2,3,4).partition(x => x % 2 == 0) // (List(2,4), List(5,3))
   def partition(predicate: A => Boolean): (List[A], List[A]) =
-    (filter(predicate), filter(a => !(predicate(a))))
+    (filter(predicate), filter(a => !predicate(a)))
 
   // Example: List(2,4,3,6).span(x => x % 2 == 0) // (List(2,4), List(3,6))
   def span(predicate: A => Boolean): (List[A], List[A]) = this match

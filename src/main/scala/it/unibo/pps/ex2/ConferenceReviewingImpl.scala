@@ -5,12 +5,11 @@ trait ConferenceReviewing:
   def loadReview(article: Int, relevance: Int, significance: Int, confidence: Int, fin: Int): Unit
   def orderedScores(article: Int, question: ConferenceReviewing.Question): List[Int]
   def averageFinalScore(article: Int): Double
-  //def acceptedArticles(): Set[Int]
   def acceptedArticles(): Set[Int]
-/*
   def sortedAcceptedArticles(): List[(Int, Double)]
-  def averageWeightedFinalScoreMap(): Map[Int, Double]
-*/
+  /*
+    def averageWeightedFinalScoreMap(): Map[Int, Double]
+  */
   def accepted(article: Int): Boolean // MUST BE PRIVATE (WILL BE REMOVED)
 
 object ConferenceReviewing:
@@ -25,7 +24,6 @@ object ConferenceReviewing:
     override def loadReview(article: Int, scores: Map[Question, Int]): Unit =
       require(scores.size == Question.values.length) // if false throws an IllegalArgumentException
       reviews = reviews ::: List((article, scores))
-      //println(reviews)
 
     override def loadReview(article: Int, relevance: Int, significance: Int, confidence: Int, fin: Int): Unit =
       val map: Map[Question, Int] = Map(
@@ -38,23 +36,18 @@ object ConferenceReviewing:
       //reviews = List((article, map)) ::: reviews // head concatenate
       //reviews = (article, map) :: reviews // prepend new element
 
-      //for ((key, value) <- map) println(s"Key: $key, Value: $value")
-      //println(reviews.length)
-
     override def orderedScores(article: Int, question: ConferenceReviewing.Question): List[Int] =
       reviews.filter((a, _) => a == article).map((_, score) => score(question)).sorted
 
     override def averageFinalScore(article: Int): Double =
-      //val filtered = reviews.filter { case (a, _) => a == article }
-      //val scores = filtered.map { case (_, score) => score(Question.FINAL) }
-      //val avg = scores.map(_.toDouble).sum / scores.size
-      //avg
       val scores = reviews.filter((a, _) => a == article).map((_, score) => score(Question.FINAL))
       scores.map(_.toDouble).sum / scores.size
 
-    override def acceptedArticles(): Set[Int] = {
+    override def acceptedArticles(): Set[Int] =
       reviews.map((a, _) => a).distinct.filter(a => accepted(a)).toSet
-    }
+
+    override def sortedAcceptedArticles(): List[(Int, Double)] =
+      acceptedArticles().toList.map(a => (a , averageFinalScore(a))).sortBy(a => a._2)
 
     // MUST BE PRIVATE (REPLACE OVERRIDE WITH PRIVATE)
     override def accepted(article: Int): Boolean =
@@ -65,19 +58,6 @@ object ConferenceReviewing:
       //req1 && req2
       averageFinalScore(article) > 5.0 &&
         reviews.filter((a, _) => a == article).map((_, s) => s(Question.RELEVANCE)).filter(r => r >= 8).length > 0
-
-
-/*  // auxiliary method
-    private boolean accepted (int article) {
-    return averageFinalScore(article) > 5.0 &&
-      reviews.stream()
-        .filter(p -> p.getX() == article)
-        .map(Pair :: getY)
-        .map(Map :: entrySet)
-        .flatMap(Set :: stream)
-        .anyMatch(e -> e.getKey() == Question.RELEVANCE && e.getValue() >= 8);
-    }
-*/
 
 @main def tryConferenceReviewingImpl: Unit =
   import ConferenceReviewing.*
@@ -126,5 +106,8 @@ object ConferenceReviewing:
 
   // testAcceptedArticles
   println("cr.acceptedArticles(): " + cr.acceptedArticles())
+
+  // testSortedAcceptedArticles
+  println("cr.sortedAcceptedArticles(): " + cr.sortedAcceptedArticles())
 
 

@@ -52,3 +52,8 @@ class ConferenceReviewingTest:
   @Test
   def testAcceptedArticles: Unit =
     assertEquals(cr.acceptedArticles(), Set(1, 2, 4))
+
+  @Test
+  def testSortedAcceptedArticles: Unit =
+    assertEquals(cr.sortedAcceptedArticles(), List((4, 7.0), (2, 7.5), (1, 8.5)))
+

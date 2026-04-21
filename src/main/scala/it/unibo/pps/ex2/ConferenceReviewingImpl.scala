@@ -5,6 +5,7 @@ trait ConferenceReviewing:
   def loadReview(article: Int, relevance: Int, significance: Int, confidence: Int, fin: Int): Unit
   def orderedScores(article: Int, question: ConferenceReviewing.Question): List[Int]
   def averageFinalScore(article: Int): Double
+  //def acceptedArticles(): Set[Int]
   def acceptedArticles(): Set[Int]
 /*
   def sortedAcceptedArticles(): List[(Int, Double)]
@@ -40,7 +41,6 @@ object ConferenceReviewing:
       //for ((key, value) <- map) println(s"Key: $key, Value: $value")
       //println(reviews.length)
 
-    // TO DO
     override def orderedScores(article: Int, question: ConferenceReviewing.Question): List[Int] =
       reviews.filter((a, _) => a == article).map((_, score) => score(question)).sorted
 
@@ -52,20 +52,9 @@ object ConferenceReviewing:
       val scores = reviews.filter((a, _) => a == article).map((_, score) => score(Question.FINAL))
       scores.map(_.toDouble).sum / scores.size
 
-    // TO DO
-    override def acceptedArticles(): Set[Int] =
-      Set(1)
-
-/*
-    @Override
-    public Set < Integer > acceptedArticles () {
-      return reviews.stream()
-        .map(Pair :: getX)
-        .distinct()
-        .filter(this :: accepted)
-        .collect(Collectors.toSet());
+    override def acceptedArticles(): Set[Int] = {
+      reviews.map((a, _) => a).distinct.filter(a => accepted(a)).toSet
     }
-*/
 
     // MUST BE PRIVATE (REPLACE OVERRIDE WITH PRIVATE)
     override def accepted(article: Int): Boolean =
@@ -116,6 +105,9 @@ object ConferenceReviewing:
   cr.loadReview(5, 7, 7, 7, 10)
 
   // testOrderedScores()
+  println("cr.orderedScores(2,Question.RELEVANCE): " + cr.orderedScores(2,Question.RELEVANCE))
+  println("cr.orderedScores(4,Question.CONFIDENCE): " + cr.orderedScores(4,Question.CONFIDENCE))
+  println("cr.orderedScores(5,Question.FINAL): " + cr.orderedScores(5,Question.FINAL))
 
   // testAverageFinalScore()
   println("averageFinalScore(1): " + cr.averageFinalScore(1))
@@ -130,10 +122,9 @@ object ConferenceReviewing:
   println("cr.accepted(2): " + cr.accepted(2))
   println("cr.accepted(3): " + cr.accepted(3))
   println("cr.accepted(4): " + cr.accepted(4))
-  println("cr.accepted()5: " + cr.accepted(5))
+  println("cr.accepted(5): " + cr.accepted(5))
 
-  println("cr.orderedScores(2,Question.RELEVANCE): " + cr.orderedScores(2,Question.RELEVANCE))
-  println("cr.orderedScores(4,Question.CONFIDENCE): " + cr.orderedScores(4,Question.CONFIDENCE))
-  println("cr.orderedScores(5,Question.FINAL): " + cr.orderedScores(5,Question.FINAL))
+  // testAcceptedArticles
+  println("cr.acceptedArticles(): " + cr.acceptedArticles())
 
 

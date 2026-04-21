@@ -48,3 +48,7 @@ class ConferenceReviewingTest:
     assertFalse(cr.accepted(3))
     assertTrue(cr.accepted(4))
     assertFalse(cr.accepted(5))
+
+  @Test
+  def testAcceptedArticles: Unit =
+    assertEquals(cr.acceptedArticles(), Set(1, 2, 4))

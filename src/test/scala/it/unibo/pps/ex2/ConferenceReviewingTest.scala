@@ -40,15 +40,7 @@ class ConferenceReviewingTest:
     assertEquals(cr.averageFinalScore(3), 3.5, 0.01)
     assertEquals(cr.averageFinalScore(4), 7.0, 0.01)
     assertEquals(cr.averageFinalScore(5), 10.0, 0.01)
-/*
-  @Test
-  def testAccepted: Unit =
-    assertTrue(cr.accepted(1))
-    assertTrue(cr.accepted(2))
-    assertFalse(cr.accepted(3))
-    assertTrue(cr.accepted(4))
-    assertFalse(cr.accepted(5))
-*/
+
   @Test
   def testAcceptedArticles: Unit =
     assertEquals(cr.acceptedArticles(), Set(1, 2, 4))
@@ -59,11 +51,11 @@ class ConferenceReviewingTest:
 
   @Test
   def optionalTestAverageWeightedFinalScore: Unit =
-    assertEquals(cr.averageWeightedFinalScoreMap()(1),(4.8+5.4)/2,0.01)
-    assertEquals(cr.averageWeightedFinalScoreMap()(2),(9.0 + 6.0)/2,0.01)
-    assertEquals(cr.averageWeightedFinalScoreMap()(3),(0.9 + 1.6)/2,0.01)
-    assertEquals(cr.averageWeightedFinalScoreMap()(4),(3.6 + 5.6 + 5.6) / 3,0.01)
-    assertEquals(cr.averageWeightedFinalScoreMap()(5),(6.0 + 7.0)/2,0.01)
-    assertEquals(cr.averageWeightedFinalScoreMap().size, 5);
+    assertEquals(cr.averageWeightedFinalScoreMap()(1),(4.8 + 5.4) / 2, 0.01)
+    assertEquals(cr.averageWeightedFinalScoreMap()(2),(9.0 + 6.0) / 2, 0.01)
+    assertEquals(cr.averageWeightedFinalScoreMap()(3),(0.9 + 1.6) / 2, 0.01)
+    assertEquals(cr.averageWeightedFinalScoreMap()(4),(3.6 + 5.6 + 5.6) / 3, 0.01)
+    assertEquals(cr.averageWeightedFinalScoreMap()(5),(6.0 + 7.0) / 2, 0.01)
+    assertEquals(cr.averageWeightedFinalScoreMap().size, 5)
 
 

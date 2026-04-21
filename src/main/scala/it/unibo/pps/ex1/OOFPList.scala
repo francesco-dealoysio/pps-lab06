@@ -48,73 +48,31 @@ enum List[A]:
     case Nil() => throw new IllegalStateException()
     case h :: t => t.foldLeft(h)(op)
 
+  // Exercise: implement the following methods
   def reverse: List[A] = foldLeft(Nil[A]())((acc, h) => h :: acc)
 
-  // Exercise: implement the following methods
-
-  // Example: List(1,2,3).zipWithValue("a") // List((1,"a"), (2,"a"), (3,"a"))
   def zipWithValue[B](value: B): List[(A, B)] =
     map(a => (a, value))
 
   def length(): Int =
     foldLeft(0)((acc, _) => acc + 1)
 
-  /*
   def indices(): List[Int] =
-    var result = foldLeft((0, Nil(): List[Int]))((acc, _) =>
-      var i = acc._1
-      var list = acc._2
-      (i + 1, i :: list)
-    )
-    result._2.reverse
-  */
-  // Example: List("a","b","c").indices // List(0,1,2)
-  def indices(): List[Int] = {
-    //foldLeft((0, Nil()): (Int, List[Int]))((init, _) => (init._1 + 1, init._1 :: init._2))._2.reverse
-    //foldLeft((length() - 1, Nil()): (Int, List[Int]))((init, _) => (init._1 - 1, init._1 :: init._2))._2
     foldLeft((length() - 1, Nil[Int]()))((init, _) => (init._1 - 1, init._1 :: init._2))._2
-    //var res: List[Int] = Nil(); (length() - 1 to 0 by -1).foreach(a => res = a :: res); res
-  }
 
-  /*
-  def zipWithIndex: List[(A, Int)] =
-    var result = foldRight((length()-1, Nil(): List[(A, Int)]))((h, acc) =>
-      var i = acc._1
-      var list = acc._2
-      (i - 1, (h, i) :: list)
-    )
-    result._2
-  */
-  //
   def zipWithIndex: List[(A, Int)] =
     foldRight((length() - 1, Nil[(A, Int)]()))((h, init) => (init._1 - 1, (h, init._1) :: init._2))._2
 
-  // Example: List(5,2,3,4).partition(x => x % 2 == 0) // (List(2,4), List(5,3))
   def partition(predicate: A => Boolean): (List[A], List[A]) =
     (filter(predicate), filter(a => !predicate(a)))
 
-  // Example: List(2,4,3,6).span(x => x % 2 == 0) // (List(2,4), List(3,6))
   def span(predicate: A => Boolean): (List[A], List[A]) = this match
-    case h :: t =>
-      if predicate(h) then
-        var (list1, list2) = t.span(predicate)
-        (h :: list1, list2)
-      else
-        (Nil(), this)
-    case _ => (Nil(), Nil())
-/*
-  // Example: List(1,2,3,4).takeRight(2) // List(3,4)
+    case h :: t => if predicate(h) then {var (list1, list2) = t.span(predicate); (h :: list1, list2)} else (Nil(), this)
+    case _      => (Nil(), Nil())
+
   def takeRight(n: Int): List[A] =
-    @tailrec
-    def inner(list: List[A], n: Int, result: List[A]): List[A] = list match
-      case h :: t if n > 0 => inner(t, n - 1, h :: result)
-      case _ => result
-    inner(this.reverse, n, Nil())
-*/
-  def takeRight(n: Int): List[A] = //this match
     var list: List[A] = Nil(); var c = n; for e <- this.reverse do {if c > 0 then list = e :: list else Nil(); c = c - 1}; list
 
-  //  Example: List(1, 2, 3, 4).collect { case x if x % 2 == 0 => x * 10 } // List(20, 40)
   def collect(predicate: PartialFunction[A, A]): List[A] =
     filter(a => predicate.isDefinedAt(a)).map(a => predicate(a))
 
@@ -136,41 +94,12 @@ object List:
     for e <- elems.reverse do list = e :: list
     list
 
-  // y: crea una lista contenente n volte l'elemento elem
   def of[A](elem: A, n: Int): List[A] =
     if n == 0 then Nil() else elem :: of(elem, n - 1)
 
 object Test extends App:
-  import List.*
+
   val reference = List(1, 2, 3, 4)
-
-  println(reference)
-  println(reference.toString)
-  val n: Int = 3
-  //var res: List[Int] = Nil(); (length() - 1 to 0 by -1).foreach(a => res = a :: res); res
-  var res: List[Int] = Nil(); var c: Int = 0; reference.foreach(a =>  res = a :: res)
-  println(res)
-
-  /*
-  def foldLeft[B](init: B)(op: (B, A) => B): B = this match
-    case h :: t => t.foldLeft(op(init, h))(op)
-    case _ => init
-  */
-
-//  collection.foldLeft(valoreIniziale)(funzione)
-//  funzione → (accumulatore, elemento) => nuovoAccumulatore
-
-  //val res = reference.foldLeft(Nil())((acc, h) => h :: acc)
-  //val res = reference.foldRight(Nil())((h, acc) => h :: acc)
-  //val res = reference.foldRight(Nil())((h, acc) => h :: acc)
-  //val res: List[Int] = reference.foldRight((0, Nil[Int]()))((h, acc) => (acc._1, h :: acc._2))._2
-  //println(res)
-
-  //val res1: List[Int] = of(10, 3)
-  //println(res1)
-
-//  println(unzip(List((1, 2), (4, 3), (10, 20)))) //
-//  println(unzipWithFold(List((1, 2), (4, 3), (10, 20)))) //
 
   println("zipWithValue: " + reference.zipWithValue(10)) // List((1, 10), (2, 10), (3, 10), (4, 10))
   println("length......: " + reference.length()) // 4
@@ -181,12 +110,3 @@ object Test extends App:
   println("span........: " + reference.span(_ < 3)) // (List(1, 2), List(3, 4))
   println("takeRight...: " + reference.takeRight(3)) // List(2, 3, 4)
   println("collect.....: " + reference.collect { case x if x % 2 == 0 => x + 1 }) // List(3, 5)
-
-/*
-  val pf1: PartialFunction[Int, Int] = {
-    case x if x % 2 == 0 => x * 10
-  }
-
-  println(pf1.isDefinedAt(2))
-  println(pf1(2))
-*/

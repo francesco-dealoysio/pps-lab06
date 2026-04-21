@@ -1,5 +1,6 @@
 package it.unibo.pps.ex1
 
+import java.awt.print.Printable
 import scala.annotation.tailrec
 
 // List as a pure interface
@@ -68,16 +69,12 @@ enum List[A]:
     result._2.reverse
   */
   // Example: List("a","b","c").indices // List(0,1,2)
-  def indices(): List[Int] =
+  def indices(): List[Int] = {
     //foldLeft((0, Nil()): (Int, List[Int]))((init, _) => (init._1 + 1, init._1 :: init._2))._2.reverse
     //foldLeft((length() - 1, Nil()): (Int, List[Int]))((init, _) => (init._1 - 1, init._1 :: init._2))._2
     foldLeft((length() - 1, Nil[Int]()))((init, _) => (init._1 - 1, init._1 :: init._2))._2
-
-  /*
-  def foldLeft[B](init: B)(op: (B, A) => B): B = this match
-    case h :: t => t.foldLeft(op(init, h))(op)
-    case _ => init
-  */
+    //var res: List[Int] = Nil(); (length() - 1 to 0 by -1).foreach(a => res = a :: res); res
+  }
 
   /*
   def zipWithIndex: List[(A, Int)] =
@@ -105,8 +102,7 @@ enum List[A]:
       else
         (Nil(), this)
     case _ => (Nil(), Nil())
-
-
+/*
   // Example: List(1,2,3,4).takeRight(2) // List(3,4)
   def takeRight(n: Int): List[A] =
     @tailrec
@@ -114,14 +110,9 @@ enum List[A]:
       case h :: t if n > 0 => inner(t, n - 1, h :: result)
       case _ => result
     inner(this.reverse, n, Nil())
-
-    //foldRight((length() - 1, Nil[A]()))((h, init) => h :: init._2)._2
-
-  /*
-  def foldRight[B](init: B)(op: (A, B) => B): B = this match
-    case h :: t => op(h, t.foldRight(init)(op))
-    case _ => init
-  */
+*/
+  def takeRight(n: Int): List[A] = //this match
+    var list: List[A] = Nil(); var c = n; for e <- this.reverse do {if c > 0 then list = e :: list else Nil(); c = c - 1}; list
 
   //  Example: List(1, 2, 3, 4).collect { case x if x % 2 == 0 => x * 10 } // List(20, 40)
   def collect(predicate: PartialFunction[A, A]): List[A] =
@@ -153,6 +144,13 @@ object Test extends App:
   import List.*
   val reference = List(1, 2, 3, 4)
 
+  println(reference)
+  println(reference.toString)
+  val n: Int = 3
+  //var res: List[Int] = Nil(); (length() - 1 to 0 by -1).foreach(a => res = a :: res); res
+  var res: List[Int] = Nil(); var c: Int = 0; reference.foreach(a =>  res = a :: res)
+  println(res)
+
   /*
   def foldLeft[B](init: B)(op: (B, A) => B): B = this match
     case h :: t => t.foldLeft(op(init, h))(op)
@@ -182,7 +180,7 @@ object Test extends App:
   println("span........: " + reference.span(_ % 2 != 0)) // (List(1), List(2, 3, 4))
   println("span........: " + reference.span(_ < 3)) // (List(1, 2), List(3, 4))
   println("takeRight...: " + reference.takeRight(3)) // List(2, 3, 4)
-  println(reference.collect { case x if x % 2 == 0 => x + 1 }) // List(3, 5)
+  println("collect.....: " + reference.collect { case x if x % 2 == 0 => x + 1 }) // List(3, 5)
 
 /*
   val pf1: PartialFunction[Int, Int] = {

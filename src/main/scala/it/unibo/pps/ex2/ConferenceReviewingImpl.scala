@@ -42,8 +42,7 @@ object ConferenceReviewing:
 
     // TO DO
     override def orderedScores(article: Int, question: ConferenceReviewing.Question): List[Int] =
-      var list = List(1,2) // TO DO
-      list
+      reviews.filter((a, _) => a == article).map((_, score) => score(question)).sorted
 
     override def averageFinalScore(article: Int): Double =
       //val filtered = reviews.filter { case (a, _) => a == article }
@@ -132,5 +131,9 @@ object ConferenceReviewing:
   println("cr.accepted(3): " + cr.accepted(3))
   println("cr.accepted(4): " + cr.accepted(4))
   println("cr.accepted()5: " + cr.accepted(5))
+
+  println("cr.orderedScores(2,Question.RELEVANCE): " + cr.orderedScores(2,Question.RELEVANCE))
+  println("cr.orderedScores(4,Question.CONFIDENCE): " + cr.orderedScores(4,Question.CONFIDENCE))
+  println("cr.orderedScores(5,Question.FINAL): " + cr.orderedScores(5,Question.FINAL))
 
 

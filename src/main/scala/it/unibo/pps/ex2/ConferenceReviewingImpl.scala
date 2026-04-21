@@ -7,10 +7,11 @@ trait ConferenceReviewing:
   def averageFinalScore(article: Int): Double
   def acceptedArticles(): Set[Int]
   def sortedAcceptedArticles(): List[(Int, Double)]
-  /*
-    def averageWeightedFinalScoreMap(): Map[Int, Double]
-  */
-  def accepted(article: Int): Boolean // MUST BE PRIVATE (WILL BE REMOVED)
+  def averageWeightedFinalScoreMap(): Map[Int, Double]
+
+  // MUST BE PRIVATE (WILL BE REMOVED)
+  //def accepted(article: Int): Boolean
+  //def averageWeightedFinalScore(article: Int): Double
 
 object ConferenceReviewing:
   def apply(): ConferenceReviewingImpl = ConferenceReviewingImpl()
@@ -47,14 +48,21 @@ object ConferenceReviewing:
       reviews.map((a, _) => a).distinct.filter(a => accepted(a)).toSet
 
     override def sortedAcceptedArticles(): List[(Int, Double)] =
-      acceptedArticles().toList.map(a => (a , averageFinalScore(a))).sortBy(a => a._2)
+      acceptedArticles().toList.map(a => (a, averageFinalScore(a))).sortBy(a => a._2)
+
+    override def averageWeightedFinalScoreMap(): Map[Int, Double] =
+      reviews.map((a, _) => (a, averageWeightedFinalScore(a))).toMap
+
+    private def averageWeightedFinalScore(article: Int): Double =
+      var score = reviews.filter((a, _) => a == article).map((_, score) => score(Question.FINAL) * score(Question.CONFIDENCE) / 10.0)
+      score.map(_.toDouble).sum / score.size
 
     // MUST BE PRIVATE (REPLACE OVERRIDE WITH PRIVATE)
-    override def accepted(article: Int): Boolean =
-//     val req1: Boolean = averageFinalScore(article) > 5.0
+    private def accepted(article: Int): Boolean =
+      //     val req1: Boolean = averageFinalScore(article) > 5.0
       //val relevances = reviews.filter((a, _) => a == article).map((_, score) => score(Question.RELEVANCE))
       //val req2: Boolean = relevances.filter(r => r >= 8).length > 0
-//     req1 && reviews.filter((a, _) => a == article).map((_, score) => score(Question.RELEVANCE)).filter(r => r >= 8).length > 0
+      //     req1 && reviews.filter((a, _) => a == article).map((_, score) => score(Question.RELEVANCE)).filter(r => r >= 8).length > 0
       //req1 && req2
       averageFinalScore(article) > 5.0 &&
         reviews.filter((a, _) => a == article).map((_, s) => s(Question.RELEVANCE)).filter(r => r >= 8).length > 0
@@ -96,6 +104,7 @@ object ConferenceReviewing:
   println("averageFinalScore(4): " + cr.averageFinalScore(4))
   println("averageFinalScore(5): " + cr.averageFinalScore(5))
 
+/*
   // testAccepted() // must be private method
   println("\n--- Test Accepted ---")
   println("cr.accepted(1): " + cr.accepted(1))
@@ -103,6 +112,7 @@ object ConferenceReviewing:
   println("cr.accepted(3): " + cr.accepted(3))
   println("cr.accepted(4): " + cr.accepted(4))
   println("cr.accepted(5): " + cr.accepted(5))
+*/
 
   // testAcceptedArticles
   println("cr.acceptedArticles(): " + cr.acceptedArticles())
@@ -110,7 +120,19 @@ object ConferenceReviewing:
   // testSortedAcceptedArticles
   println("cr.sortedAcceptedArticles(): " + cr.sortedAcceptedArticles())
 
-  // testSortedAcceptedArticles
+/*
+  // test averageWeightedFinalScore // must be private method
+  println("averageWeightedFinalScore(1): " + cr.averageWeightedFinalScore(1))
+  println("averageWeightedFinalScore(2): " + cr.averageWeightedFinalScore(2))
+  println("averageWeightedFinalScore(3): " + cr.averageWeightedFinalScore(3))
+  println("averageWeightedFinalScore(4): " + cr.averageWeightedFinalScore(4))
+  println("averageWeightedFinalScore(5): " + cr.averageWeightedFinalScore(5))
+*/
 
-
-
+  // testAverageWeightedFinalScoreMap()
+  println("cr.averageWeightedFinalScoreMap(1): " + cr.averageWeightedFinalScoreMap()(1))
+  println("cr.averageWeightedFinalScoreMap(2): " + cr.averageWeightedFinalScoreMap()(2))
+  println("cr.averageWeightedFinalScoreMap(3): " + cr.averageWeightedFinalScoreMap()(3))
+  println("cr.averageWeightedFinalScoreMap(4): " + cr.averageWeightedFinalScoreMap()(4))
+  println("cr.averageWeightedFinalScoreMap(5): " + cr.averageWeightedFinalScoreMap()(5))
+  println("cr.averageWeightedFinalScoreMap().size: " + cr.averageWeightedFinalScoreMap().size)

@@ -57,3 +57,7 @@ class ConferenceReviewingTest:
   def testSortedAcceptedArticles: Unit =
     assertEquals(cr.sortedAcceptedArticles(), List((4, 7.0), (2, 7.5), (1, 8.5)))
 
+  @Test
+  def optionalTestAverageWeightedFinalScore: Unit =
+    assertEquals((4.8+5.4)/2, (4.8+5.4)/2, 0.01); // TO DO
+

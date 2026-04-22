@@ -35,18 +35,18 @@ object PerformanceUtils:
   /* List (immutable) */
   val list = (1 to size).toList
 
-  measure("List read element") {
+  measure("List read (immutable)") {
     val index = size / 2
     list(index)
   }
 
-  measure("List update element") {
+  measure("List update (immutable)") {
     val index = size / 2
     val newKeyValue = 111
     list.updated(index, newKeyValue)
   }
 
-  measure("List remove element") {
+  measure("List remove (immutable)") {
     val index = size / 2
     val listAfter = list.take(index) ++ list.drop(index + 1)
   }
@@ -55,18 +55,18 @@ object PerformanceUtils:
   var listBuffer = ListBuffer[Int]()
   listBuffer ++= (1 to size).toList
 
-  measure("ListBuffer read element") {
+  measure("ListBuffer read (mutable)") {
     val index = size / 2
     listBuffer(index)
   }
 
-  measure("ListBuffer update element") {
+  measure("ListBuffer update (mutable)") {
     val index = size / 2
     val newKeyValue = 111
     listBuffer(index) = newKeyValue
   }
 
-  measure("ListBuffer remove element") {
+  measure("ListBuffer remove (mutable)") {
     val index = size / 2
     listBuffer.remove(index)
   }
@@ -75,18 +75,18 @@ object PerformanceUtils:
   /* Vector (immutable) */
   val vector = (1 to size).toVector
 
-  measure("Vector read element") {
+  measure("Vector read (immutable)") {
     val index = size / 2
     vector(index)
   }
 
-  measure("Vector update element") {
+  measure("Vector update (immutable)") {
     val index = size / 2
     val newKeyValue = 111
     vector.updated(index, newKeyValue)
   }
 
-  measure("Vector remove element") {
+  measure("Vector remove (immutable)") {
     val index = size / 2
     val vectorAfter = vector.patch(index, Nil, 1)
   }
@@ -94,18 +94,18 @@ object PerformanceUtils:
   /* Array (mutable) */
   var array = (1 to size).toArray
 
-  measure("Array read element") {
+  measure("Array read (mutable)") {
     val index = size / 2
     array(index)
   }
 
-  measure("Array update element") {
+  measure("Array update (mutable)") {
     val index = size / 2
     val newKeyValue = 111
     array(index) = newKeyValue
   }
 
-  measure("Array remove element") {
+  measure("Array remove (mutable)") {
     val index = size / 2
     array.patch(index, Nil, 1)
   }
@@ -114,18 +114,18 @@ object PerformanceUtils:
   val arrayBuffer = ArrayBuffer[Int]()
   arrayBuffer ++= (1 to size).toList
 
-  measure("ArrayBuffer read element") {
+  measure("ArrayBuffer read (mutable)") {
     val index = size / 2
     arrayBuffer(index)
   }
 
-  measure("ArrayBuffer update element") {
+  measure("ArrayBuffer update (mutable)") {
     val index = size / 2
     val newKeyValue = 111
     arrayBuffer(index) = newKeyValue
   }
 
-  measure("ListBuffer remove element") {
+  measure("ArrayBuffer remove (mutable)") {
     val index = size / 2
     arrayBuffer.remove(index)
   }
@@ -134,29 +134,29 @@ object PerformanceUtils:
   val immSet = (1 to size).toSet
   val mutSet = HashSet.from(1 to size)
 
-  measure("Immutable Set contains") {
+  measure("Set contains (immutable)") {
     immSet.contains(key)
   }
 
-  measure("Mutable HashSet contains") {
+  measure("HashSet contains (immutable)") {
     mutSet.contains(key)
   }
 
-  measure("Immutable Set add") {
+  measure("Set add (immutable)") {
     immSet + (key)
   }
 
-  measure("Mutable HashSet add") {
+  measure("HashSet add (mutable") {
     val copy = mutSet.clone()
     copy += (key)
     copy
   }
 
-  measure("Immutable Set remove") {
+  measure("Set remove (immutable") {
     immSet - (key)
   }
 
-  measure("Mutable HashSet remove") {
+  measure("HashSet remove (mutable)") {
     val copy = mutSet.clone()
     copy -= (key)
     copy
@@ -166,39 +166,39 @@ object PerformanceUtils:
   val immMap = (1 to size).map(i => i -> (i * 10)).toMap
   val mutMap = HashMap.from((1 to size).map(i => i -> (i * 10)))
 
-  measure("Immutable Map lookup") {
+  measure("Map lookup (immutable)") {
     immMap.get(key)
   }
 
-  measure("Mutable HashMap lookup") {
+  measure("HashMap lookup (mutable)") {
     mutMap.get(key)
   }
 
-  measure("Immutable Map update") {
+  measure("Map update (immutable") {
     immMap.updated(key, -1)
   }
 
-  measure("Mutable HashMap update") {
+  measure("HashMap update (mutable)") {
     val copy = mutMap.clone()
     copy.update(key, -1)
     copy
   }
 
-  measure("Immutable Map add") {
+  measure("Map add (immutable)") {
     immMap + (size + 1 -> 999)
   }
 
-  measure("Mutable HashMap add") {
+  measure("HashMap add (mutable)") {
     val copy = mutMap.clone()
     copy += ((size + 1) -> 999)
     copy
   }
 
-  measure("Immutable Map remove") {
+  measure("Map remove (immutable") {
     immMap - key
   }
 
-  measure("Mutable HashMap remove") {
+  measure("HashMap remove (mutable)") {
     val copy = mutMap.clone()
     copy -= key
     copy

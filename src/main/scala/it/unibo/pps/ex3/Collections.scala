@@ -28,7 +28,7 @@ object PerformanceUtils:
   import scala.collection.mutable.HashMap
 
   val DEBUG = true
-  val size = 10 //100000
+  val size = 100000
   val key = size / 2
 
   /* Linear sequences: List, ListBuffer */

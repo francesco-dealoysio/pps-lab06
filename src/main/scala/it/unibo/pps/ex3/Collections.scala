@@ -64,7 +64,7 @@ object PerformanceUtils:
 
   /* Indexed sequences: Vector, Array, ArrayBuffer */
   val vector = (1 to size).toVector     // Vector (immutable)
-  var array = (1 to size).toArray       // Array (mutable)
+  val array = (1 to size).toArray       // Array (mutable)
   val arrayBuffer = ArrayBuffer[Int]()  // ArrayBuffer (mutable)
   arrayBuffer ++= (1 to size).toList
 

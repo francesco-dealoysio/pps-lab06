@@ -55,7 +55,7 @@ object PerformanceUtils:
   }
 
   measure("List remove (immutable)") {
-    val listAfter = list.take(index) ++ list.drop(index + 1)
+    list.take(index) ++ list.drop(index + 1)
   }
 
   measure("ListBuffer remove (mutable)") {
@@ -93,7 +93,7 @@ object PerformanceUtils:
   }
 
   measure("Vector remove (immutable)") {
-    val vectorAfter = vector.patch(index, Nil, 1)
+    vector.patch(index, Nil, 1)
   }
 
   measure("Array remove (mutable)") {

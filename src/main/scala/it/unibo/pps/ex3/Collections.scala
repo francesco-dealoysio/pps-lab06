@@ -30,103 +30,77 @@ object PerformanceUtils:
   val DEBUG = true
   val size = 100000
   val key = size / 2
+  val index = size / 2
+  val newKeyValue = 111
 
   /* Linear sequences: List, ListBuffer */
-  /* List (immutable) */
-  val list = (1 to size).toList
+  val list = (1 to size).toList       // List (immutable)
+  val listBuffer = ListBuffer[Int]()  // ListBuffer (mutable)
+  listBuffer ++= (1 to size).toList
 
   measure("List read (immutable)") {
-    val index = size / 2
     list(index)
   }
 
-  measure("List update (immutable)") {
-    val index = size / 2
-    val newKeyValue = 111
-    list.updated(index, newKeyValue)
-  }
-
-  measure("List remove (immutable)") {
-    val index = size / 2
-    val listAfter = list.take(index) ++ list.drop(index + 1)
-  }
-
-  /* ListBuffer (mutable) */
-  var listBuffer = ListBuffer[Int]()
-  listBuffer ++= (1 to size).toList
-
   measure("ListBuffer read (mutable)") {
-    val index = size / 2
     listBuffer(index)
   }
 
+  measure("List update (immutable)") {
+    list.updated(index, newKeyValue)
+  }
+
   measure("ListBuffer update (mutable)") {
-    val index = size / 2
-    val newKeyValue = 111
     listBuffer(index) = newKeyValue
   }
 
+  measure("List remove (immutable)") {
+    val listAfter = list.take(index) ++ list.drop(index + 1)
+  }
+
   measure("ListBuffer remove (mutable)") {
-    val index = size / 2
     listBuffer.remove(index)
   }
 
   /* Indexed sequences: Vector, Array, ArrayBuffer */
-  /* Vector (immutable) */
-  val vector = (1 to size).toVector
+  val vector = (1 to size).toVector     // Vector (immutable)
+  var array = (1 to size).toArray       // Array (mutable)
+  val arrayBuffer = ArrayBuffer[Int]()  // ArrayBuffer (mutable)
+  arrayBuffer ++= (1 to size).toList
 
   measure("Vector read (immutable)") {
-    val index = size / 2
     vector(index)
   }
 
-  measure("Vector update (immutable)") {
-    val index = size / 2
-    val newKeyValue = 111
-    vector.updated(index, newKeyValue)
-  }
-
-  measure("Vector remove (immutable)") {
-    val index = size / 2
-    val vectorAfter = vector.patch(index, Nil, 1)
-  }
-
-  /* Array (mutable) */
-  var array = (1 to size).toArray
-
   measure("Array read (mutable)") {
-    val index = size / 2
     array(index)
   }
 
-  measure("Array update (mutable)") {
-    val index = size / 2
-    val newKeyValue = 111
-    array(index) = newKeyValue
-  }
-
-  measure("Array remove (mutable)") {
-    val index = size / 2
-    array.patch(index, Nil, 1)
-  }
-
-  /* ArrayBuffer (mutable) */
-  val arrayBuffer = ArrayBuffer[Int]()
-  arrayBuffer ++= (1 to size).toList
-
   measure("ArrayBuffer read (mutable)") {
-    val index = size / 2
     arrayBuffer(index)
   }
 
+  measure("Vector update (immutable)") {
+    vector.updated(index, newKeyValue)
+  }
+
+  measure("Array update (mutable)") {
+    array(index) = newKeyValue
+  }
+
   measure("ArrayBuffer update (mutable)") {
-    val index = size / 2
-    val newKeyValue = 111
     arrayBuffer(index) = newKeyValue
   }
 
+  measure("Vector remove (immutable)") {
+    val vectorAfter = vector.patch(index, Nil, 1)
+  }
+
+  measure("Array remove (mutable)") {
+    array.patch(index, Nil, 1)
+  }
+
   measure("ArrayBuffer remove (mutable)") {
-    val index = size / 2
     arrayBuffer.remove(index)
   }
 
